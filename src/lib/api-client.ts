@@ -50,14 +50,10 @@ export const api = {
   webhook: () => apiFetch<{ url: string | null; enabled: boolean }>('/v1/me/webhook'),
   regenerateWebhook: () => apiFetch<{ webhook_secret: string }>('/v1/me/billing/regenerate-webhook', { method: 'POST' }),
   brokers: () => apiFetch<Array<{ broker: string; status: string; account_id: string | null }>>('/v1/me/brokers'),
-  connectTradier: (access_token: string, account_id: string) =>
-    apiFetch('/v1/me/brokers/tradier', {
-      method: 'POST',
-      body: JSON.stringify({ access_token, account_id }),
-    }),
+  tradierAuthorize: () => apiFetch<{ url: string }>('/v1/me/brokers/tradier/authorize'),
+  schwabAuthorize: () => apiFetch<{ url: string }>('/v1/me/brokers/schwab/authorize'),
   disconnectBroker: (broker: string) =>
     apiFetch(`/v1/me/brokers/${broker}`, { method: 'DELETE' }),
-  schwabAuthorize: () => apiFetch<{ url: string }>('/v1/me/brokers/schwab/authorize'),
   trades: (mode?: string) => apiFetch<Trade[]>(`/v1/me/trades${mode ? `?mode=${mode}` : ''}`),
   dailyPnl: (month: string) => apiFetch<Record<string, number>>(`/v1/me/performance/daily?month=${month}`),
   summary: () => apiFetch<{ total_trades: number; total_pnl: number; win_rate: number }>('/v1/me/performance/summary'),

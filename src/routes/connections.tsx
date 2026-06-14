@@ -10,8 +10,6 @@ function ConnectionsPage() {
   const navigate = useNavigate()
   const [brokers, setBrokers] = useState<Awaited<ReturnType<typeof api.brokers>>>([])
   const [canTrade, setCanTrade] = useState(false)
-  const [token, setToken] = useState('')
-  const [accountId, setAccountId] = useState('')
   const [msg, setMsg] = useState('')
 
   useEffect(() => {
@@ -21,16 +19,18 @@ function ConnectionsPage() {
     }
     api.billing().then((b) => setCanTrade(b.can_process_trades)).catch(() => {})
     api.brokers().then(setBrokers).catch(() => {})
+
+    const params = new URLSearchParams(window.location.search)
+    const connected = params.get('connected')
+    if (connected) {
+      setMsg(`${connected} connected successfully`)
+      window.history.replaceState({}, '', '/connections')
+    }
   }, [navigate])
 
   async function connectTradier() {
-    try {
-      await api.connectTradier(token, accountId)
-      setBrokers(await api.brokers())
-      setMsg('Tradier connected')
-    } catch (e) {
-      setMsg(e instanceof Error ? e.message : 'Failed')
-    }
+    const { url } = await api.tradierAuthorize()
+    window.location.href = url
   }
 
   async function connectSchwab() {
@@ -52,14 +52,19 @@ function ConnectionsPage() {
       {canTrade && (
         <div className="space-y-4">
           <div className="island-shell rounded-2xl p-5">
-            <h2 className="mb-3 font-semibold">Tradier (sandbox)</h2>
-            <input className="mb-2 w-full rounded-lg border px-3 py-2" placeholder="Access token" value={token} onChange={(e) => setToken(e.target.value)} />
-            <input className="mb-2 w-full rounded-lg border px-3 py-2" placeholder="Account ID" value={accountId} onChange={(e) => setAccountId(e.target.value)} />
-            <button onClick={connectTradier} className="rounded-full bg-[var(--lagoon-deep)] px-4 py-2 text-sm text-white">Connect Tradier</button>
+            <h2 className="mb-3 font-semibold">Tradier</h2>
+            <p className="mb-3 text-sm text-[var(--sea-ink-soft)]">
+              Connect via OAuth — your token is stored per account, not in server env vars.
+            </p>
+            <button onClick={connectTradier} className="rounded-full bg-[var(--lagoon-deep)] px-4 py-2 text-sm text-white">
+              Connect Tradier
+            </button>
           </div>
           <div className="island-shell rounded-2xl p-5">
             <h2 className="mb-3 font-semibold">Charles Schwab</h2>
-            <button onClick={connectSchwab} className="rounded-full border px-4 py-2 text-sm">Authorize Schwab</button>
+            <button onClick={connectSchwab} className="rounded-full border px-4 py-2 text-sm">
+              Authorize Schwab
+            </button>
           </div>
           <div className="island-shell rounded-2xl p-5 opacity-70">
             <h2 className="mb-1 font-semibold">Webull (beta)</h2>
