@@ -5,15 +5,39 @@ export default function Footer() {
 
   return (
     <footer className="site-footer">
-      <div className="page-wrap site-footer-inner">
-        <p className="site-footer-copy">
-          &copy; {year} Trade Platform. Not financial advice — trading involves risk.
-        </p>
-        <div className="site-footer-links">
-          <Link to="/terms">Terms</Link>
-          <Link to="/privacy">Privacy</Link>
-          <Link to="/support">Support</Link>
+      <div className="page-wrap site-footer-inner px-4 sm:px-6 lg:px-8">
+        <div className="site-footer-brand">
+          <h2>Trade Platform</h2>
+          <p>Notification alerts → AI parsing → broker execution. Not financial advice.</p>
         </div>
+        <div className="site-footer-col">
+          <h3>Product</h3>
+          <ul>
+            <li>
+              <Link to="/pricing">Pricing</Link>
+            </li>
+            <li>
+              <Link to="/reviews">Reviews</Link>
+            </li>
+            <li>
+              <Link to="/support">Support</Link>
+            </li>
+          </ul>
+        </div>
+        <div className="site-footer-col">
+          <h3>Legal</h3>
+          <ul>
+            <li>
+              <Link to="/terms">Terms</Link>
+            </li>
+            <li>
+              <Link to="/privacy">Privacy</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div className="page-wrap site-footer-bottom px-4 sm:px-6 lg:px-8">
+        &copy; {year} Trade Platform. Trading involves risk.
       </div>
     </footer>
   )

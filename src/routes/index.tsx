@@ -20,27 +20,30 @@ function HomePage() {
 
   return (
     <main className="marketing-page">
-      <div className="page-wrap px-4">
-        <Hero />
-      </div>
+      <Hero />
       <FeaturesSection />
       <HowItWorks />
-      <section className="marketing-section page-wrap px-4">
-        <h2 className="marketing-section-title">Customer reviews</h2>
-        {reviews.length ? (
-          <ul className="review-link-list">
-            {reviews.map((review) => (
-              <li key={review.id}>
-                <ReviewCard review={review} compact />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="marketing-empty">Reviews from paying customers will appear here.</p>
-        )}
-        <p className="marketing-section-link">
-          <Link to="/reviews">See all reviews →</Link>
-        </p>
+      <section className="marketing-section marketing-section-white">
+        <div className="page-wrap px-4 sm:px-6 lg:px-8">
+          <div className="section-head">
+            <span className="section-badge section-badge-yellow">Reviews</span>
+            <h2 className="marketing-section-title">Customer reviews</h2>
+          </div>
+          {reviews.length ? (
+            <ul className="review-link-list">
+              {reviews.map((review) => (
+                <li key={review.id}>
+                  <ReviewCard review={review} compact />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="marketing-empty">Reviews from paying customers will appear here.</p>
+          )}
+          <p className="marketing-section-link">
+            <Link to="/reviews">See all reviews →</Link>
+          </p>
+        </div>
       </section>
       <FaqSection />
       <FinalCta />

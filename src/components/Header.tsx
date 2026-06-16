@@ -1,5 +1,4 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import ThemeToggle from './ThemeToggle'
 import { clearReceiverTokenCache } from '#/lib/api-client'
 import { signOut, useSession } from '#/lib/auth-client'
 
@@ -16,9 +15,12 @@ export default function Header() {
 
   return (
     <header className="site-header">
-      <nav className="page-wrap site-header-inner">
-        <Link to="/" className="site-logo">
-          Trade Platform
+      <nav className="page-wrap site-header-inner px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="site-brand">
+          <span className="site-logo-mark" aria-hidden="true">
+            TP
+          </span>
+          <span className="site-logo-text">Trade Platform</span>
         </Link>
         <div className="site-nav">
           <Link to="/" className="nav-link" activeProps={{ className: 'nav-link is-active' }}>
@@ -44,7 +46,7 @@ export default function Header() {
               <Link to="/settings" className="nav-link" activeProps={{ className: 'nav-link is-active' }}>
                 Settings
               </Link>
-              <button type="button" onClick={logout} className="nav-link nav-button">
+              <button type="button" onClick={logout} className="nav-link">
                 Log out
               </button>
             </>
@@ -53,13 +55,16 @@ export default function Header() {
               <Link to="/login" className="nav-link" activeProps={{ className: 'nav-link is-active' }}>
                 Log in
               </Link>
-              <Link to="/signup" className="btn-primary btn-sm">
-                Sign up
-              </Link>
             </>
           ) : null}
         </div>
-        <ThemeToggle />
+        <div className="site-header-actions">
+          {!loggedIn && !isPending ? (
+            <Link to="/signup" className="btn-primary btn-sm">
+              Sign up
+            </Link>
+          ) : null}
+        </div>
       </nav>
     </header>
   )
