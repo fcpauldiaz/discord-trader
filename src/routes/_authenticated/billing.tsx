@@ -9,24 +9,12 @@ export const Route = createFileRoute('/_authenticated/billing')({ component: Bil
 function BillingPage() {
   const [billing, setBilling] = useState<Awaited<ReturnType<typeof api.billing>> | null>(null)
   const [user, setUser] = useState<{ id: string; email: string } | null>(null)
-  const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
   useEffect(() => {
     api.billing().then(setBilling).catch(() => setError('Could not load billing'))
     api.me().then((u) => setUser({ id: u.id, email: u.email })).catch(() => {})
   }, [])
-
-  async function regenerate() {
-    try {
-      const res = await api.regenerateWebhook()
-      const refreshed = await api.webhook()
-      setMessage(`Webhook secret regenerated. New URL ends with …${res.webhook_secret.slice(-8)}`)
-      if (refreshed.url) setMessage(`New webhook URL: ${refreshed.url}`)
-    } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Failed')
-    }
-  }
 
   const manageUrl = billing?.customer_portal_url || (user ? checkoutUrl(user.id, user.email) : '#')
 
@@ -49,12 +37,6 @@ function BillingPage() {
           Manage subscription
         </a>
       )}
-      {billing?.can_process_trades && (
-        <button onClick={regenerate} className="rounded-full border border-[var(--line)] px-4 py-2 text-sm">
-          Regenerate webhook secret
-        </button>
-      )}
-      {message && <p className="text-sm text-[var(--sea-ink-soft)]">{message}</p>}
     </main>
   )
 }

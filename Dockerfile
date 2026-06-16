@@ -2,10 +2,6 @@ FROM node:22.12-bookworm-slim AS build
 
 WORKDIR /app
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3 make g++ \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY package.json package-lock.json ./
 RUN npm install
 
@@ -34,8 +30,9 @@ ENV NODE_ENV=production \
     PORT=3000
 
 COPY --from=build /app/.output ./.output
+COPY --from=build /app/drizzle ./drizzle
 
-RUN mkdir -p data
+ENV AUTH_MIGRATIONS_DIR=/app/drizzle
 
 EXPOSE 3000
 

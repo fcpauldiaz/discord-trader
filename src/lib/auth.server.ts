@@ -1,23 +1,22 @@
-import { mkdirSync } from 'node:fs'
-import { dirname } from 'node:path'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { betterAuth } from 'better-auth'
 import { jwt } from 'better-auth/plugins'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
-import Database from 'better-sqlite3'
 
+import * as authSchema from '#/db/auth-schema'
+import { db } from '#/lib/db'
+import { ensureAuthMigrations } from '#/lib/migrate-auth'
 import { provisionReceiverUser } from '#/lib/provision-receiver'
 
-function authDatabasePath(): string {
-  const raw = process.env.DATABASE_URL ?? 'file:./data/auth.db'
-  const path = raw.startsWith('file:') ? raw.slice(5) : raw
-  mkdirSync(dirname(path), { recursive: true })
-  return path
-}
+await ensureAuthMigrations()
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
   secret: process.env.BETTER_AUTH_SECRET ?? 'dev-better-auth-secret-change-in-production',
-  database: new Database(authDatabasePath()),
+  database: drizzleAdapter(db, {
+    provider: 'sqlite',
+    schema: authSchema,
+  }),
   emailAndPassword: {
     enabled: true,
   },

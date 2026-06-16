@@ -5,7 +5,7 @@ Active options traders who follow Discord alert channels and want automated exec
 
 ## Core jobs
 1. Subscribe and connect a broker
-2. Copy webhook URL into Notification Watcher
+2. Sign in to the Notification Watcher desktop app
 3. Monitor P&L and trade history on the dashboard
 
 ## Information hierarchy (dashboard)
@@ -15,7 +15,7 @@ Active options traders who follow Discord alert channels and want automated exec
 
 ## Gating
 - Free: marketing, signup, view empty dashboard with upgrade CTA
-- Pro: webhook URL, broker connections, trade processing
+- Pro: desktop app automation, broker connections, trade processing
 
 ## Pages
 | Route | Purpose |
@@ -24,9 +24,10 @@ Active options traders who follow Discord alert channels and want automated exec
 | `/pricing` | Lemon Squeezy checkout |
 | `/dashboard` | Performance |
 | `/connections` | Broker OAuth |
-| `/webhooks` | Webhook URL |
 | `/settings` | Paper/live, caps, tickers |
 | `/billing` | Subscription management |
 
 ## API dependency
 All authenticated data comes from `trade-receiver` REST API (`VITE_RECEIVER_API_URL`).
+
+Desktop apps authenticate via `POST /api/desktop/auth` and send alerts to `POST /v1/ingest` on trade-receiver.

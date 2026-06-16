@@ -1,6 +1,6 @@
 # Trade Platform
 
-TanStack Start marketing site and logged-in app for broker connections, webhooks, billing, and performance dashboards.
+TanStack Start marketing site and logged-in app for broker connections, desktop app sign-in, billing, and performance dashboards.
 
 ## Quick start
 
@@ -8,17 +8,19 @@ TanStack Start marketing site and logged-in app for broker connections, webhooks
 cd trade-platform
 cp .env.example .env
 npm install
-npx auth migrate   # first run only — creates Better Auth tables
+npm run db:migrate
 npm run dev
 ```
 
-Also run [trade-receiver](https://github.com/fcpauldiaz/trade-receiver) on port 8000. Set `VITE_RECEIVER_API_URL` and matching `INTERNAL_API_SECRET` on both services.
+Also run [trade-receiver](https://github.com/fcpauldiaz/trade-receiver) on port 8000. Use the **same `DATABASE_URL`** (and `TURSO_AUTH_TOKEN` when remote) on both services. Set `VITE_RECEIVER_API_URL` and matching `INTERNAL_API_SECRET` on both services.
 
 ## Auth
 
-Sign up and log in use **Better Auth** (email + password). Sessions live in a platform SQLite DB (`DATABASE_URL`). On signup, the platform provisions a linked user in trade-receiver via `POST /v1/internal/provision`.
+Sign up and log in use **Better Auth** (email + password). Auth tables (`user`, `session`, `account`, `jwks`, …) live in the **same libSQL database** as trade-receiver (`users`, `subscriptions`, trades, …). On signup, the platform provisions a linked receiver row via `POST /v1/internal/provision`.
 
 API calls to trade-receiver use a **Better Auth JWT** (`Authorization: Bearer …`), not cookies.
+
+Desktop apps sign in via `POST /api/desktop/auth` and receive a device API key + ingest URL.
 
 ### Environment
 
@@ -26,13 +28,12 @@ API calls to trade-receiver use a **Better Auth JWT** (`Authorization: Bearer �
 |----------|---------|
 | `BETTER_AUTH_SECRET` | Session signing (32+ chars) |
 | `BETTER_AUTH_URL` | Public platform URL |
-| `DATABASE_URL` | Better Auth SQLite path (`file:./data/auth.db`) |
+| `DATABASE_URL` | Same libSQL DB as trade-receiver |
+| `TURSO_AUTH_TOKEN` | Required when `DATABASE_URL` is `libsql://…` |
 | `INTERNAL_API_SECRET` | Must match receiver — provisions users on signup |
 | `VITE_RECEIVER_API_URL` | trade-receiver API base |
 
-### Legacy users (API-key signup)
-
-If you had an account before Better Auth, sign up again with the **same email**. The receiver links your existing subscription and trade history to the new auth account.
+Auth migrations run automatically on server startup. To apply them manually: `npm run db:migrate`.
 
 ## Routes
 
@@ -45,7 +46,6 @@ If you had an account before Better Auth, sign up again with the **same email**.
 | `/dashboard` | P&L calendar + trade table |
 | `/connections` | Tradier + Schwab connect + test connection |
 | `/onboarding` | Post-connect sizing setup + SPY test order |
-| `/webhooks` | Webhook URL (paid) |
 | `/settings` | Paper/live, sizing mode, caps, tickers |
 | `/billing` | Subscription status |
 
@@ -72,12 +72,13 @@ Use the repo **Dockerfile** — do not use Nixpacks (it pins Node 22.11, which i
 |----------|---------|
 | `BETTER_AUTH_SECRET` | 32+ char secret |
 | `BETTER_AUTH_URL` | `https://app.yourdomain.com` |
-| `DATABASE_URL` | `file:./data/auth.db` |
+| `DATABASE_URL` | `libsql://your-db-org.turso.io` (same as trade-receiver) |
+| `TURSO_AUTH_TOKEN` | Turso auth token (same as trade-receiver) |
 | `INTERNAL_API_SECRET` | same as trade-receiver |
 | `RECEIVER_API_URL` | trade-receiver URL (server-side provisioning) |
 | `PORT` | `3000` |
 
-Mount a persistent volume on `/app/data` for the Better Auth SQLite database.
+No separate auth database volume is required when using Turso. For local dev, point `DATABASE_URL` at the receiver SQLite file (see `.env.example`).
 
 ## Tests & CI
 

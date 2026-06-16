@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
 import { api } from '#/lib/api-client'
 
 type Props = {
@@ -65,6 +64,14 @@ export default function OnboardingTestStep({ broker, defaultMode, onSkip, onComp
       {result && <p className="text-sm text-green-700">{result}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
+      <div className="rounded-xl border border-[var(--line)] bg-[var(--chip-bg)] p-4 text-sm text-[var(--sea-ink-soft)]">
+        <p className="m-0 font-semibold text-[var(--sea-ink)]">Next: install the desktop app</p>
+        <p className="mt-2 mb-0">
+          Download Notification Watcher for macOS or Windows, then sign in with the same email and password.
+          Alerts will forward automatically — no webhook URL to copy.
+        </p>
+      </div>
+
       <div className="flex flex-wrap gap-3 pt-2">
         <button type="button" onClick={onSkip} className="rounded-full border border-[var(--line)] px-4 py-2 text-sm">
           Skip for now
@@ -72,13 +79,10 @@ export default function OnboardingTestStep({ broker, defaultMode, onSkip, onComp
         <button
           type="button"
           onClick={onComplete}
-          className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold"
+          className="rounded-full bg-[var(--lagoon-deep)] px-4 py-2 text-sm font-semibold text-white"
         >
-          Continue to webhooks
+          Go to dashboard
         </button>
-        <Link to="/webhooks" className="text-sm text-[var(--sea-ink-soft)] no-underline" onClick={onComplete}>
-          or open webhooks →
-        </Link>
       </div>
     </div>
   )

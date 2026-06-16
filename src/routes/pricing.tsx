@@ -29,7 +29,7 @@ function PricingPage() {
           <ul className="mt-4 space-y-2 text-sm text-[var(--sea-ink-soft)]">
             <li>Sign up and explore the dashboard</li>
             <li>No trade processing</li>
-            <li>No webhook URL</li>
+            <li>No desktop app automation</li>
           </ul>
           <Link to="/signup" className="mt-6 inline-block text-sm font-semibold text-[var(--lagoon-deep)]">
             Create account
@@ -41,7 +41,7 @@ function PricingPage() {
           <ul className="mt-4 space-y-2 text-sm text-[var(--sea-ink-soft)]">
             <li>AI trade parsing + execution</li>
             <li>Paper and live trading</li>
-            <li>Webhook URL + broker connections</li>
+            <li>Desktop app + automated execution</li>
             <li>Performance dashboards</li>
           </ul>
           {session?.user && userId ? (

@@ -10,7 +10,6 @@ export type BillingStatus = {
   renews_at: string | null
   ends_at: string | null
   can_process_trades: boolean
-  webhook_enabled: boolean
   customer_portal_url: string | null
 }
 
@@ -75,12 +74,9 @@ export const api = {
       id: string
       email: string
       can_process_trades: boolean
-      webhook_url: string | null
       onboarding_completed: boolean
     }>('/v1/me'),
   billing: () => apiFetch<BillingStatus>('/v1/me/billing'),
-  webhook: () => apiFetch<{ url: string | null; enabled: boolean }>('/v1/me/webhook'),
-  regenerateWebhook: () => apiFetch<{ webhook_secret: string }>('/v1/me/billing/regenerate-webhook', { method: 'POST' }),
   brokers: () => apiFetch<Array<{ broker: string; status: string; account_id: string | null }>>('/v1/me/brokers'),
   tradierAuthorize: () => apiFetch<{ url: string }>('/v1/me/brokers/tradier/authorize'),
   schwabAuthorize: () => apiFetch<{ url: string }>('/v1/me/brokers/schwab/authorize'),

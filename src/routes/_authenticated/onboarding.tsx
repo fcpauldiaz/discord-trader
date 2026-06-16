@@ -51,7 +51,7 @@ function OnboardingPage() {
 
   async function finishOnboarding() {
     await api.completeOnboarding().catch(() => {})
-    navigate({ to: '/webhooks' })
+    navigate({ to: '/dashboard' })
   }
 
   return (

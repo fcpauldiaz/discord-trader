@@ -10,7 +10,7 @@ function SupportPage() {
         Email support@tradeplatform.example or open an issue on GitHub for bugs and feature requests.
       </p>
       <ul className="list-disc space-y-2 pl-5 text-sm">
-        <li><Link to="/webhooks">Webhook setup</Link> — copy URL into Notification Watcher</li>
+        <li>Desktop app — install Notification Watcher and sign in with your platform account</li>
         <li><Link to="/connections">Broker connections</Link> — Tradier and Schwab OAuth</li>
         <li><Link to="/billing">Billing</Link> — subscription and renewals</li>
       </ul>
