@@ -1,3 +1,7 @@
+import type { Review } from '#/lib/review-types'
+import type { TestOrderResult, UserSettings } from '#/lib/sizing-types'
+import { authClient } from '#/lib/auth-client'
+
 const API_BASE = import.meta.env.VITE_RECEIVER_API_URL || 'http://localhost:8000'
 
 export type BillingStatus = {
@@ -7,6 +11,7 @@ export type BillingStatus = {
   ends_at: string | null
   can_process_trades: boolean
   webhook_enabled: boolean
+  customer_portal_url: string | null
 }
 
 export type Trade = {
@@ -24,28 +29,55 @@ export type Trade = {
   created_at: string
 }
 
+let cachedToken: string | null = null
+let cachedTokenExpiresAt = 0
+
+async function getReceiverToken(): Promise<string> {
+  const now = Date.now()
+  if (cachedToken && now < cachedTokenExpiresAt) {
+    return cachedToken
+  }
+  const { data, error } = await authClient.token()
+  if (error || !data?.token) {
+    cachedToken = null
+    cachedTokenExpiresAt = 0
+    throw new Error('Not authenticated')
+  }
+  cachedToken = data.token
+  cachedTokenExpiresAt = now + 55 * 60 * 1000
+  return cachedToken
+}
+
+export function clearReceiverTokenCache() {
+  cachedToken = null
+  cachedTokenExpiresAt = 0
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('api_key') : null
+  const token = await getReceiverToken()
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
     ...(init?.headers as Record<string, string>),
   }
-  if (token) headers.Authorization = `Bearer ${token}`
   const res = await fetch(`${API_BASE}${path}`, { ...init, headers })
   if (!res.ok) {
     const text = await res.text()
     throw new Error(text || res.statusText)
   }
+  if (res.status === 204) return undefined as T
   return res.json() as Promise<T>
 }
 
 export const api = {
-  register: (email: string, name?: string) =>
-    apiFetch<{ id: string; email: string; api_key: string }>('/v1/users', {
-      method: 'POST',
-      body: JSON.stringify({ email, name }),
-    }),
-  me: () => apiFetch<{ id: string; email: string; can_process_trades: boolean; webhook_url: string | null }>('/v1/me'),
+  me: () =>
+    apiFetch<{
+      id: string
+      email: string
+      can_process_trades: boolean
+      webhook_url: string | null
+      onboarding_completed: boolean
+    }>('/v1/me'),
   billing: () => apiFetch<BillingStatus>('/v1/me/billing'),
   webhook: () => apiFetch<{ url: string | null; enabled: boolean }>('/v1/me/webhook'),
   regenerateWebhook: () => apiFetch<{ webhook_secret: string }>('/v1/me/billing/regenerate-webhook', { method: 'POST' }),
@@ -56,15 +88,31 @@ export const api = {
     apiFetch(`/v1/me/brokers/${broker}`, { method: 'DELETE' }),
   trades: (mode?: string) => apiFetch<Trade[]>(`/v1/me/trades${mode ? `?mode=${mode}` : ''}`),
   dailyPnl: (month: string) => apiFetch<Record<string, number>>(`/v1/me/performance/daily?month=${month}`),
-  summary: () => apiFetch<{ total_trades: number; total_pnl: number; win_rate: number }>('/v1/me/performance/summary'),
-  settings: () =>
-    apiFetch<{ default_mode: string; max_contracts: number; allowed_tickers: string | null; live_trading_enabled: boolean }>(
-      '/v1/me/settings',
+  summary: () =>
+    apiFetch<{ total_trades: number; total_pnl: number; mtd_pnl: number; win_rate: number }>(
+      '/v1/me/performance/summary',
     ),
-  updateSettings: (body: {
-    default_mode: string
-    max_contracts: number
-    allowed_tickers: string | null
-    live_trading_enabled: boolean
-  }) => apiFetch('/v1/me/settings', { method: 'PUT', body: JSON.stringify(body) }),
+  settings: () => apiFetch<UserSettings>('/v1/me/settings'),
+  updateSettings: (body: UserSettings) =>
+    apiFetch<UserSettings>('/v1/me/settings', { method: 'PUT', body: JSON.stringify(body) }),
+  testBrokerOrder: (broker: string) =>
+    apiFetch<TestOrderResult>(`/v1/me/brokers/${broker}/test-order`, {
+      method: 'POST',
+      body: JSON.stringify({ symbol: 'SPY', quantity: 1, side: 'buy' }),
+    }),
+  completeOnboarding: () => apiFetch<{ status: string }>('/v1/me/onboarding/complete', { method: 'POST' }),
+  regenerateApiKey: () =>
+    apiFetch<{ id: string; email: string; api_key: string | null; onboarding_completed: boolean }>(
+      '/v1/me/regenerate-api-key',
+      { method: 'POST' },
+    ),
+  setDefaultBroker: (broker: string) =>
+    apiFetch<{ default_broker: string }>('/v1/me/brokers/default', {
+      method: 'PUT',
+      body: JSON.stringify({ broker }),
+    }),
+  reviews: (limit = 20) => apiFetch<Review[]>(`/v1/reviews?limit=${limit}`),
+  myReview: () => apiFetch<Review | null>('/v1/me/review'),
+  submitReview: (body: { rating: number; body: string }) =>
+    apiFetch<Review>('/v1/me/reviews', { method: 'POST', body: JSON.stringify(body) }),
 }

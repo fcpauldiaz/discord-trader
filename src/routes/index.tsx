@@ -1,8 +1,18 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import { api } from '#/lib/api-client'
+import type { Review } from '#/lib/review-types'
+import ReviewCard from '#/components/reviews/ReviewCard'
 
 export const Route = createFileRoute('/')({ component: HomePage })
 
 function HomePage() {
+  const [reviews, setReviews] = useState<Review[]>([])
+
+  useEffect(() => {
+    api.reviews(3).then(setReviews).catch(() => {})
+  }, [])
+
   return (
     <main className="page-wrap px-4 pb-8 pt-14">
       <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
@@ -12,7 +22,7 @@ function HomePage() {
         </h1>
         <p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
           Watch macOS or Windows notifications, parse trade signals with AI, validate against live option chains,
-          and route orders to Schwab, Tradier, or Webull — paper or live.
+          and route orders to Schwab or Tradier — paper or live.
         </p>
         <div className="flex flex-wrap gap-3">
           <Link
@@ -33,13 +43,30 @@ function HomePage() {
         {[
           ['AI parsing', 'Discord-style alerts become structured trade intents.'],
           ['Chain validation', 'Strike, expiry, and liquidity checked before any order.'],
-          ['Multi-broker', 'Schwab, Tradier, and Webull with paper + live modes.'],
+          ['Multi-broker', 'Schwab and Tradier with paper + live modes.'],
         ].map(([title, desc]) => (
           <article key={title} className="island-shell rounded-2xl p-5">
             <h2 className="mb-2 font-semibold text-[var(--sea-ink)]">{title}</h2>
             <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
           </article>
         ))}
+      </section>
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <h2 className="text-2xl font-semibold text-[var(--sea-ink)]">Customer reviews</h2>
+          <Link to="/reviews" className="text-sm font-semibold text-[var(--lagoon-deep)] no-underline">
+            See all reviews →
+          </Link>
+        </div>
+        {reviews.length ? (
+          <div className="grid gap-4 sm:grid-cols-3">
+            {reviews.map((review) => (
+              <ReviewCard key={review.id} review={review} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--sea-ink-soft)]">Reviews from paying customers will appear here.</p>
+        )}
       </section>
     </main>
   )

@@ -1,22 +1,23 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { checkoutUrl } from '#/lib/lemon-squeezy'
-import { isLoggedIn } from '#/lib/auth'
+import { useSession } from '#/lib/auth-client'
 import { api } from '#/lib/api-client'
 import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/pricing')({ component: PricingPage })
 
 function PricingPage() {
+  const { data: session } = useSession()
   const [userId, setUserId] = useState('')
   const [email, setEmail] = useState('')
 
   useEffect(() => {
-    if (!isLoggedIn()) return
+    if (!session?.user) return
     api.me().then((u) => {
       setUserId(u.id)
       setEmail(u.email)
     }).catch(() => {})
-  }, [])
+  }, [session?.user])
 
   return (
     <main className="page-wrap px-4 py-12">
@@ -43,18 +44,18 @@ function PricingPage() {
             <li>Webhook URL + broker connections</li>
             <li>Performance dashboards</li>
           </ul>
-          {isLoggedIn() && userId ? (
+          {session?.user && userId ? (
             <a
               href={checkoutUrl(userId, email)}
               className="mt-6 inline-block rounded-full bg-[var(--lagoon-deep)] px-5 py-2.5 text-sm font-semibold text-white no-underline"
             >
               Subscribe with Lemon Squeezy
             </a>
-          ) : (
+          ) : !session?.user ? (
             <Link to="/login" className="mt-6 inline-block text-sm font-semibold text-[var(--lagoon-deep)]">
               Log in to subscribe
             </Link>
-          )}
+          ) : null}
         </article>
       </div>
     </main>

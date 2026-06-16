@@ -1,4 +1,5 @@
 type Props = {
+  mtdPnl: number
   totalPnl: number
   winRate: number
   totalTrades: number
@@ -6,20 +7,20 @@ type Props = {
   onModeChange: (mode: string) => void
 }
 
-export default function KpiStrip({ totalPnl, winRate, totalTrades, mode, onModeChange }: Props) {
+export default function KpiStrip({ mtdPnl, totalPnl, winRate, totalTrades, mode, onModeChange }: Props) {
   return (
     <div className="grid gap-3 sm:grid-cols-4">
       <div className="island-shell rounded-xl p-4">
-        <p className="text-xs text-[var(--sea-ink-soft)]">Total P&amp;L</p>
+        <p className="text-xs text-[var(--sea-ink-soft)]">MTD P&amp;L</p>
+        <p className="text-2xl font-bold text-[var(--sea-ink)]">${mtdPnl.toFixed(2)}</p>
+      </div>
+      <div className="island-shell rounded-xl p-4">
+        <p className="text-xs text-[var(--sea-ink-soft)]">All-time P&amp;L</p>
         <p className="text-2xl font-bold text-[var(--sea-ink)]">${totalPnl.toFixed(2)}</p>
       </div>
       <div className="island-shell rounded-xl p-4">
         <p className="text-xs text-[var(--sea-ink-soft)]">Win rate</p>
         <p className="text-2xl font-bold text-[var(--sea-ink)]">{winRate.toFixed(1)}%</p>
-      </div>
-      <div className="island-shell rounded-xl p-4">
-        <p className="text-xs text-[var(--sea-ink-soft)]">Trades</p>
-        <p className="text-2xl font-bold text-[var(--sea-ink)]">{totalTrades}</p>
       </div>
       <div className="island-shell rounded-xl p-4">
         <p className="mb-2 text-xs text-[var(--sea-ink-soft)]">View mode</p>
