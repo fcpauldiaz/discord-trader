@@ -311,12 +311,10 @@ a:hover {
   margin-bottom: 1.5rem;
 }
 
-.marketing-hero h1 {
-  position: relative;
-  z-index: 1;
+.marketing-hero-title {
   font-size: clamp(2.25rem, 5vw, 3.75rem);
   font-weight: 900;
-  line-height: 1.05;
+  line-height: 1.08;
   letter-spacing: -0.03em;
   color: var(--ja-black);
   margin: 0 0 1.25rem;
@@ -324,21 +322,39 @@ a:hover {
   min-width: 0;
 }
 
-.marketing-hero-highlight {
+.hero-highlight {
   position: relative;
-  display: inline;
+  display: inline-block;
 }
 
-.marketing-hero-highlight::after {
-  content: "";
+.hero-highlight-text {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-highlight-mark {
   position: absolute;
+  bottom: 0.35rem;
   left: 0;
-  bottom: 0.15em;
   width: 100%;
-  height: 0.35em;
+  height: 1rem;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-highlight-yellow .hero-highlight-mark {
   background: var(--ja-yellow);
-  z-index: -1;
   transform: rotate(-1deg);
+}
+
+.hero-highlight-pink .hero-highlight-mark {
+  background: var(--ja-pink);
+  transform: rotate(1deg);
+}
+
+.marketing-hero-emphasis {
+  font-weight: 700;
+  color: var(--ja-black);
 }
 
 .marketing-hero-lead {
@@ -363,6 +379,43 @@ a:hover {
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
+}
+
+.social-proof {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.social-proof-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.social-proof-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 2px solid var(--ja-white);
+  margin-left: -0.5rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  color: var(--ja-black);
+  box-shadow: 0 0 0 1px var(--ja-black);
+}
+
+.social-proof-avatar:first-child {
+  margin-left: 0;
+}
+
+.social-proof-label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ja-black);
 }
 
 .marketing-hero-note {

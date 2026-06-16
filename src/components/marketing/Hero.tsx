@@ -1,5 +1,8 @@
 import { Link } from '@tanstack/react-router'
 
+import HeroHighlight from '#/components/marketing/HeroHighlight'
+import SocialProof from '#/components/marketing/SocialProof'
+
 export default function Hero() {
   return (
     <section className="marketing-hero">
@@ -7,12 +10,15 @@ export default function Hero() {
         <div className="marketing-hero-inner">
           <div>
             <span className="marketing-badge">Discord alerts → executed trades</span>
-            <h1>
+            <h1 className="marketing-hero-title">
               Turn notification alerts into{' '}
-              <span className="marketing-hero-highlight">broker orders</span> automatically
+              <HeroHighlight variant="yellow">broker orders</HeroHighlight>{' '}
+              <HeroHighlight variant="pink">automatically</HeroHighlight>
             </h1>
             <p className="marketing-hero-lead">
-              Install the desktop app, sign in once, and let AI handle the rest.
+              Install the desktop app —{' '}
+              <strong className="marketing-hero-emphasis">sign in once</strong> — and let AI handle
+              the rest.
             </p>
             <p className="marketing-hero-sub">
               Parse Discord-style alerts, validate option chains, and route orders to Schwab or
@@ -26,6 +32,7 @@ export default function Hero() {
                 View pricing
               </Link>
             </div>
+            <SocialProof />
             <p className="marketing-hero-note">Set up in minutes. No webhook URLs to copy.</p>
           </div>
           <div className="marketing-hero-visual">
