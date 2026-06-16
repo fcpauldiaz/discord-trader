@@ -1,11 +1,11 @@
 const FEATURES = [
   {
     title: 'Desktop alert capture',
-    description: 'macOS and Windows notifications are forwarded automatically — no manual webhook setup.',
+    description: 'macOS and Windows notifications forward automatically — sign in once, no URLs to copy.',
   },
   {
     title: 'AI trade parsing',
-    description: 'Discord-style alerts become structured buy/sell intents with strike, expiry, and price.',
+    description: 'Alerts become structured buy/sell intents with strike, expiry, and price.',
   },
   {
     title: 'Chain validation',
@@ -30,7 +30,7 @@ export default function FeaturesSection() {
     <section className="marketing-section page-wrap px-4">
       <h2 className="marketing-section-title">Features</h2>
       <p className="marketing-section-subtitle">
-        A complete product stack — desktop capture, AI parsing, and broker execution.
+        Everything you need from alert to filled order — desktop capture, AI parsing, and broker execution.
       </p>
       <div className="feature-grid">
         {FEATURES.map((feature) => (

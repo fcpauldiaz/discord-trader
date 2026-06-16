@@ -4,17 +4,16 @@ export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="site-footer mt-16 px-4 pb-14 pt-10 text-[var(--sea-ink-soft)]">
-      <div className="page-wrap flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-        <p className="m-0 text-sm">
+    <footer className="site-footer">
+      <div className="page-wrap site-footer-inner">
+        <p className="site-footer-copy">
           &copy; {year} Trade Platform. Not financial advice — trading involves risk.
         </p>
-        <p className="m-0 text-sm">Notification Watcher desktop app</p>
-      </div>
-      <div className="page-wrap mt-4 flex flex-wrap justify-center gap-4 text-sm sm:justify-start">
-        <Link to="/terms" className="text-[var(--sea-ink-soft)] no-underline hover:text-[var(--sea-ink)]">Terms</Link>
-        <Link to="/privacy" className="text-[var(--sea-ink-soft)] no-underline hover:text-[var(--sea-ink)]">Privacy</Link>
-        <Link to="/support" className="text-[var(--sea-ink-soft)] no-underline hover:text-[var(--sea-ink)]">Support</Link>
+        <div className="site-footer-links">
+          <Link to="/terms">Terms</Link>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/support">Support</Link>
+        </div>
       </div>
     </footer>
   )

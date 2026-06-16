@@ -31,16 +31,14 @@ function ReviewsPage() {
   }, [loggedIn])
 
   return (
-    <main className="page-wrap space-y-8 px-4 py-10">
-      <header>
-        <h1 className="text-3xl font-bold text-[var(--sea-ink)]">Customer reviews</h1>
-        <p className="mt-2 max-w-2xl text-sm text-[var(--sea-ink-soft)]">
-          Real feedback from paying subscribers. Anyone can read reviews; only active customers can leave one.
-        </p>
+    <main className="marketing-page page-wrap-wide space-y-8 px-4 py-10">
+      <header className="marketing-page-header">
+        <h1>Customer reviews</h1>
+        <p>Real feedback from paying subscribers. Anyone can read reviews; only active customers can leave one.</p>
       </header>
 
       <section>
-        <h2 className="mb-4 text-lg font-semibold text-[var(--sea-ink)]">What customers say</h2>
+        <h2 className="marketing-section-title">What customers say</h2>
         <ReviewsList reviews={reviews} />
       </section>
 
@@ -48,13 +46,13 @@ function ReviewsPage() {
         {loggedIn && canTrade && <ReviewForm existing={myReview} onSaved={refresh} />}
         {loggedIn && !canTrade && <UpgradeBanner />}
         {!loggedIn && (
-          <div className="island-shell rounded-2xl p-5 text-sm text-[var(--sea-ink-soft)]">
-            <p className="mb-3">Active subscribers can leave a review.</p>
-            <Link to="/login" className="font-semibold text-[var(--lagoon-deep)] no-underline">
+          <div className="feature-item">
+            <p className="mb-3 text-sm text-[var(--muted-foreground)]">Active subscribers can leave a review.</p>
+            <Link to="/login" className="font-semibold">
               Log in
             </Link>
             {' · '}
-            <Link to="/signup" className="font-semibold text-[var(--lagoon-deep)] no-underline">
+            <Link to="/signup" className="font-semibold">
               Sign up
             </Link>
           </div>
