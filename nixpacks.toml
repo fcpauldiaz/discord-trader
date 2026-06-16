@@ -1,0 +1,15 @@
+# Fallback if Coolify uses Nixpacks instead of the Dockerfile.
+[variables]
+NODE_VERSION = "22.12.0"
+
+[phases.setup]
+nixPkgs = ["nodejs_22", "python3", "gcc"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "node .output/server/index.mjs"

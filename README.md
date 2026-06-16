@@ -49,6 +49,36 @@ If you had an account before Better Auth, sign up again with the **same email**.
 | `/settings` | Paper/live, sizing mode, caps, tickers |
 | `/billing` | Subscription status |
 
+## Deploy on Coolify (Dockerfile)
+
+Use the repo **Dockerfile** — do not use Nixpacks (it pins Node 22.11, which is too old for TanStack Start).
+
+| Setting | Value |
+|---------|--------|
+| Build Pack | **Dockerfile** |
+| Port | `3000` |
+| Start command | leave empty (uses image `CMD`) |
+
+**Build-time variables** (required for client bundle):
+
+| Variable | Example |
+|----------|---------|
+| `VITE_RECEIVER_API_URL` | `https://api.yourdomain.com` |
+| `VITE_LEMON_SQUEEZY_CHECKOUT_URL` | your checkout URL |
+
+**Runtime variables:**
+
+| Variable | Example |
+|----------|---------|
+| `BETTER_AUTH_SECRET` | 32+ char secret |
+| `BETTER_AUTH_URL` | `https://app.yourdomain.com` |
+| `DATABASE_URL` | `file:./data/auth.db` |
+| `INTERNAL_API_SECRET` | same as trade-receiver |
+| `RECEIVER_API_URL` | trade-receiver URL (server-side provisioning) |
+| `PORT` | `3000` |
+
+Mount a persistent volume on `/app/data` for the Better Auth SQLite database.
+
 ## Tests & CI
 
 ```bash
